@@ -1,6 +1,8 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+# from PyQt5.QtWidgets import QFileDialog 
+import sys
 
 
 class MainWindow(QMainWindow):
@@ -15,7 +17,7 @@ class MainWindow(QMainWindow):
         self.pathToFolders = QLineEdit()
         self.pathToFolders.setPlaceholderText("Path to folders you want to backup")
         self.pathToBackupFolder = QLineEdit()
-        self.pathToBackupFolder.setPlaceholderText("Path to backup folder")
+        self.pathToBackupFolder.setPlaceholderText("Path to backup destination folder")
 
         self.browseFoldersButton = QPushButton("Browse...")
         self.browseFoldersButton.clicked.connect(self.on_browseFolders_clicked)
@@ -47,13 +49,14 @@ class MainWindow(QMainWindow):
         centralWidget.setLayout(mainLayout)
         self.setCentralWidget(centralWidget)
         self.setWindowTitle("Nice Backup")
-        #self.setMinimumSize(600, 600)
+        self.setMinimumSize(600, 200)
 
     def on_exit_clicked(self, widget):
-        print("exit")
+        sys.exit()
 
     def on_browseFolders_clicked(self, widget):
         print("Bam!File dialog")
+        # fname = QFileDialog.getOpenFileName(self, 'Open file', '/home')[0]
 
     def on_browseBackupFolder_clicked(self, widget):
         print("Bam!File dialog")
