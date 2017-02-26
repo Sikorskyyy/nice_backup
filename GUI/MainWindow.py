@@ -14,6 +14,7 @@ class MainWindow(QMainWindow):
         buttonLayout = QHBoxLayout()
         foldersLayout = QHBoxLayout()
         backupFolderLayout = QHBoxLayout()
+        self.usbDevices = QComboBox()
 
         self.pathToFolders = QLineEdit()
         self.pathToFolders.setPlaceholderText("Path to folders you want to backup")
@@ -43,6 +44,7 @@ class MainWindow(QMainWindow):
         buttonLayout.addWidget(self.exitButton)
         buttonLayout.setSpacing(10)
 
+
         mainLayout.addLayout(backupFolderLayout)
         mainLayout.addLayout(foldersLayout)
         mainLayout.addLayout(buttonLayout)
@@ -68,4 +70,3 @@ class MainWindow(QMainWindow):
         backuper = Backuper.Backuper()
         backuper.make_backup(self.pathToFolders.text(), self.pathToBackupFolder.text())
         print('Done')
-        
