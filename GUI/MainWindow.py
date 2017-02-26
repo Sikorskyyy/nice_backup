@@ -1,9 +1,10 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QComboBox, QLineEdit
+                             , QWidget)
 import sys
 from Backuper import Backuper
-
+import USB.utils
+import USB.StorageDevice
+import getpass
 
 class MainWindow(QMainWindow):
     
@@ -14,7 +15,11 @@ class MainWindow(QMainWindow):
         buttonLayout = QHBoxLayout()
         foldersLayout = QHBoxLayout()
         backupFolderLayout = QHBoxLayout()
-        self.usbDevices = QComboBox()
+        self.usbDevicesChooser = QComboBox()
+        self.usbDevices = USB.utils.getStorageDevice()
+
+        for device in self.usbDevices:
+            self.usbDevicesChooser.addItem(device.__str__())
 
         self.pathToFolders = QLineEdit()
         self.pathToFolders.setPlaceholderText("Path to folders you want to backup")
@@ -44,7 +49,7 @@ class MainWindow(QMainWindow):
         buttonLayout.addWidget(self.exitButton)
         buttonLayout.setSpacing(10)
 
-
+        mainLayout.addWidget(self.usbDevicesChooser)
         mainLayout.addLayout(backupFolderLayout)
         mainLayout.addLayout(foldersLayout)
         mainLayout.addLayout(buttonLayout)
@@ -58,11 +63,12 @@ class MainWindow(QMainWindow):
         sys.exit()
 
     def on_browseFolders_clicked(self, widget):
-        fname = QFileDialog.getExistingDirectory(self, 'Open file', '/home')
+        index = self.usbDevicesChooser.currentIndex()
+        fname = QFileDialog.getExistingDirectory(self.window(), 'Open file', '{}'.format(self.usbDevices[index].getPath()))
         self.pathToFolders.setText(fname)
 
     def on_browseBackupFolder_clicked(self, widget):
-        fname = QFileDialog.getExistingDirectory(self, 'Open file', '/home')
+        fname = QFileDialog.getExistingDirectory(self.window(), 'Open file', '/home/{}'.format(getpass.getuser()))
         self.pathToBackupFolder.setText(fname)
 
     def on_startBackup_clicked(self, widget):

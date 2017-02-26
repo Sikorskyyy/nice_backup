@@ -12,7 +12,7 @@ class Backuper(object):
 
     def __generate_backup_dir_name__(self, base_dest_directory):
         date = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
-        return base_dest_directory + date
+        return os.path.join(base_dest_directory,date)
 
     def make_backup(self, source, destination):
         backup_directory = self.__generate_backup_dir_name__(destination)

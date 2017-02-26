@@ -3,6 +3,7 @@ import usb.util
 import usb.backend.libusb1 as libusb1
 import os
 import glob
+from USB.StorageDevice import StorageDevice
 import sys
 
 SYS_USB_DEVICES = '/sys/bus/usb/devices'
@@ -62,8 +63,10 @@ def getDeviceMountPoint(devices):
                     deviceList.append((device.manufacturer, device.product, mountPoints.get(partName)))
     return deviceList
 
-devices = list(usb.core.find(find_all=True, backend=libusb1.get_backend()))
-
-deviceList = getDeviceMountPoint(getMassStorageDevices(devices))
-for device in deviceList:
-    print(device)
+def getStorageDevice():
+    devices = list(usb.core.find(find_all=True, backend=libusb1.get_backend()))
+    storageDevice = []
+    deviceList = getDeviceMountPoint(getMassStorageDevices(devices))
+    for device in deviceList:
+        storageDevice.append(StorageDevice(device))
+    return storageDevice
