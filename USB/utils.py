@@ -54,7 +54,6 @@ def getDeviceMountPoint(devices):
             if not scsiId in possiblePaths:
                 continue
 
-
             parts = glob.glob(os.path.join(devicePath, '*/partition'))
 
             for partPath in parts:
