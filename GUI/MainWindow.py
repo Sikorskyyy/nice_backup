@@ -1,11 +1,12 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-# from PyQt5.QtWidgets import QFileDialog 
 import sys
+from Backuper import Backuper
 
 
 class MainWindow(QMainWindow):
+    
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         centralWidget = QWidget()
@@ -55,11 +56,16 @@ class MainWindow(QMainWindow):
         sys.exit()
 
     def on_browseFolders_clicked(self, widget):
-        print("Bam!File dialog")
-        # fname = QFileDialog.getOpenFileName(self, 'Open file', '/home')[0]
+        fname = QFileDialog.getExistingDirectory(self, 'Open file', '/home')
+        self.pathToFolders.setText(fname)
 
     def on_browseBackupFolder_clicked(self, widget):
-        print("Bam!File dialog")
+        fname = QFileDialog.getExistingDirectory(self, 'Open file', '/home')
+        self.pathToBackupFolder.setText(fname)
 
     def on_startBackup_clicked(self, widget):
         print("Starting backup")
+        backuper = Backuper.Backuper()
+        backuper.make_backup(self.pathToFolders.text(), self.pathToBackupFolder.text())
+        print('Done')
+        
