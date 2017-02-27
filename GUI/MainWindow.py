@@ -94,6 +94,5 @@ class MainWindow(QMainWindow):
         backuper = Backuper.Backuper()
         sources = self.pathToFolders.text().split(";")
         destination = self.pathToBackupFolder.text()
-        for path in sources:
-            backuper.make_backup(path, destination)
+        backuper.make_backup(sources, destination)
         print('Done')
