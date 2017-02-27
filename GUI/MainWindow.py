@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QComboBox, QLineEdit
-                             , QWidget)
+from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, 
+                            QComboBox, QLineEdit, QWidget)
 import sys
 from Backuper import Backuper
-import USB.utils
+from USB.utils import Utils 
 import USB.StorageDevice
 import getpass
 
@@ -16,7 +16,9 @@ class MainWindow(QMainWindow):
         foldersLayout = QHBoxLayout()
         backupFolderLayout = QHBoxLayout()
         self.usbDevicesChooser = QComboBox()
-        self.usbDevices = USB.utils.getStorageDevice()
+        
+        usb_util = Utils()
+        self.usbDevices = usb_util.get_storage_device()
 
         for device in self.usbDevices:
             self.usbDevicesChooser.addItem(device.__str__())

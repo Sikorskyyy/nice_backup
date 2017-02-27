@@ -18,7 +18,7 @@ class StorageDevice:
 
     def totalSpace(self):
         stat = os.statvfs(self.path)
-        return (stat.f_frsize * stat.f_blocks) / 2 ** 30
+        return (stat.f_frsize * stat.f_blocks) / 2**30
 
     def __str__(self):
        return '{} {} ({:3.2} Gb)'.format(self.manufacturerName, self.productName, self.freeSpace())
