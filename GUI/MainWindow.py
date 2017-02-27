@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, 
-                            QComboBox, QLineEdit, QWidget)
+                            QComboBox, QLineEdit, QWidget, QTreeView, QAbstractItemView, QListView, QFileSystemModel)
 import sys
 from Backuper import Backuper
 from USB.utils import Utils 
@@ -66,8 +66,24 @@ class MainWindow(QMainWindow):
 
     def on_browseFolders_clicked(self, widget):
         index = self.usbDevicesChooser.currentIndex()
-        fname = QFileDialog.getExistingDirectory(self.window(), 'Open file', '{}'.format(self.usbDevices[index].getPath()))
-        self.pathToFolders.setText(fname)
+        file_dialog = QFileDialog()
+        file_dialog.setFileMode(QFileDialog.DirectoryOnly)
+        file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)
+        file_view = file_dialog.findChild(QListView, 'listView')
+
+        if file_view:
+            file_view.setSelectionMode(QAbstractItemView.MultiSelection)
+        f_tree_view = file_dialog.findChild(QTreeView)
+        if f_tree_view:
+            f_tree_view.setSelectionMode(QAbstractItemView.MultiSelection)
+
+        paths = []
+        file_dialog.setDirectory(self.usbDevices[index].getPath())
+
+        if file_dialog.exec():
+            paths = file_dialog.selectedFiles()
+
+        self.pathToFolders.setText(";".join(paths))
 
     def on_browseBackupFolder_clicked(self, widget):
         fname = QFileDialog.getExistingDirectory(self.window(), 'Open file', '/home/{}'.format(getpass.getuser()))
@@ -76,5 +92,8 @@ class MainWindow(QMainWindow):
     def on_startBackup_clicked(self, widget):
         print("Starting backup")
         backuper = Backuper.Backuper()
-        backuper.make_backup(self.pathToFolders.text(), self.pathToBackupFolder.text())
+        sources = self.pathToFolders.text().split(";")
+        destination = self.pathToBackupFolder.text()
+        for path in sources:
+            backuper.make_backup(path, destination)
         print('Done')
