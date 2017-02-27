@@ -1,14 +1,16 @@
 from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, 
                             QComboBox, QLineEdit, QWidget, QTreeView, QAbstractItemView, QListView, QFileSystemModel)
 import sys
+import getpass
 from Backuper import Backuper
 from USB.utils import Utils 
 import USB.StorageDevice
-import getpass
+
 
 class MainWindow(QMainWindow):
     
     def __init__(self, parent=None):
+
         super(MainWindow, self).__init__(parent)
         centralWidget = QWidget()
         mainLayout = QVBoxLayout()
@@ -73,11 +75,12 @@ class MainWindow(QMainWindow):
 
         if file_view:
             file_view.setSelectionMode(QAbstractItemView.MultiSelection)
-        f_tree_view = file_dialog.findChild(QTreeView)
-        if f_tree_view:
-            f_tree_view.setSelectionMode(QAbstractItemView.MultiSelection)
 
-        paths = []
+        ftree_view = file_dialog.findChild(QTreeView)
+
+        if ftree_view:
+            ftree_view.setSelectionMode(QAbstractItemView.MultiSelection)
+
         file_dialog.setDirectory(self.usbDevices[index].getPath())
 
         if file_dialog.exec():

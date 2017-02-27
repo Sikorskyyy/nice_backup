@@ -14,9 +14,9 @@ class Backuper(object):
         date = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
         return os.path.join(base_dest_directory,date)
 
-    def make_backup(self, source, destination):
-        for x in source:
+    def make_backup(self, sources, destination):
+        for source_folder in sources:
             backup_directory = self.__generate_backup_dir_name__(destination)
-            backup_directory += "/" + os.path.basename(os.path.normpath(x))
+            backup_directory += "/" + os.path.basename(os.path.normpath(source_folder))
             os.makedirs(backup_directory)
-            dir_util.copy_tree(x, backup_directory)
+            dir_util.copy_tree(source_folder, backup_directory)
