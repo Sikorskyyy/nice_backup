@@ -1,10 +1,13 @@
 from PyQt5.QtWidgets import (QFileDialog, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, 
-                            QComboBox, QLineEdit, QWidget, QTreeView, QAbstractItemView, QListView, QFileSystemModel)
+                            QComboBox, QLineEdit, QWidget, QTreeView, QAbstractItemView, QListView, QFileSystemModel,
+                             QProgressDialog, QApplication, QProgressBar, QMessageBox)
 import sys
 import getpass
 from Backuper import Backuper
 from USB.utils import Utils 
 import USB.StorageDevice
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 
 class MainWindow(QMainWindow):
@@ -13,7 +16,7 @@ class MainWindow(QMainWindow):
 
         super(MainWindow, self).__init__(parent)
         centralWidget = QWidget()
-        mainLayout = QVBoxLayout()
+        self.mainLayout = QVBoxLayout()
         buttonLayout = QHBoxLayout()
         foldersLayout = QHBoxLayout()
         backupFolderLayout = QHBoxLayout()
@@ -53,12 +56,12 @@ class MainWindow(QMainWindow):
         buttonLayout.addWidget(self.exitButton)
         buttonLayout.setSpacing(10)
 
-        mainLayout.addWidget(self.usbDevicesChooser)
-        mainLayout.addLayout(backupFolderLayout)
-        mainLayout.addLayout(foldersLayout)
-        mainLayout.addLayout(buttonLayout)
+        self.mainLayout.addWidget(self.usbDevicesChooser)
+        self.mainLayout.addLayout(backupFolderLayout)
+        self.mainLayout.addLayout(foldersLayout)
+        self.mainLayout.addLayout(buttonLayout)
 
-        centralWidget.setLayout(mainLayout)
+        centralWidget.setLayout(self.mainLayout)
         self.setCentralWidget(centralWidget)
         self.setWindowTitle("Nice Backup")
         self.setMinimumSize(600, 200)
@@ -97,5 +100,24 @@ class MainWindow(QMainWindow):
         backuper = Backuper.Backuper()
         sources = self.pathToFolders.text().split(";")
         destination = self.pathToBackupFolder.text()
-        backuper.make_backup(sources, destination)
-        print('Done')
+
+        progress = QProgressBar()
+        progress.setMinimum(0)
+        progress.setMaximum(len(sources))
+        self.mainLayout.addWidget(progress)
+
+        for source in sources:
+            backuper.make_backup(source, destination)
+            progress.setValue(sources.index(source))
+            QApplication.processEvents()
+        doneDialog = QMessageBox()
+
+        doneDialog.setIcon(QMessageBox.Information)
+        doneDialog.setText("Copying data is completed")
+        doneDialog.setWindowTitle("Copy event")
+        doneDialog.setStandardButtons(QMessageBox.Ok)
+
+        index = self.mainLayout.indexOf(progress)
+        self.mainLayout.itemAt(index).widget().setParent(None)
+
+        doneDialog.exec()
